@@ -2,13 +2,15 @@
 
   description = "Example for Python Libraries as overlays and their usage";
 
-  outputs = { self, nixpkgs }: # implicitly get `nixpkgs` from flake registry
+  outputs = { self, nixpkgs }: # implicitly get `nixpkgs` from flake registry, we could instead define `inputs` further up
     let
-      system = "x86_64-linux";  # for simplicity, don't want to deal with flake-utils now
+      system = "x86_64-linux"; # for simplicity, I don't want to deal with flake-utils now
 
       overlayed-nixpkgs = import nixpkgs {
         inherit system;
         overlays = [ self.overlays.customPyLibs self.overlays.pkgsOverlay ];
+        # Watch our for this self-thing. It is exactly how one would
+        # use another Flake from the inputs.
       };
     in
     {
@@ -56,6 +58,11 @@
 
       nixosConfigurations = {
         # `nixos-rebuild build-vm --flake './#someMachine'`
+        # I you wanted to deploy on hardware
+        # `nixos-rebuild switch --flake '.#<system_name>' --builders "''" --target-host roo@<ip>`
+        # maybe with something like: 
+        #    export NIX_SSHOPTS="-i '~/.ssh/id_rsa' -o IdentitiesOnly=yes -tt"
+        # and the `--use-remote-sudo` option, that might not display a pormpt for password as a bug
         someMachine = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = { inherit self; };
@@ -91,7 +98,7 @@
           name = "mypylib default test";
           nodes = {
             machine = {
-              imports = [ ./modules/mypylibModule.nix ];  # but howto pass self or the overlay?
+              imports = [ ./modules/mypylibModule.nix ]; # but howto pass self or the overlay?
               programs.mypylibModule.enable = true;
               users.users.nixos = {
                 isNormalUser = true;
@@ -109,14 +116,14 @@
         };
       };
 
-    # hydraJobs = ...;
-    # templates = ...;
+      # hydraJobs = ...;
+      # templates = ...;
 
     };
 
-    nixConfig = {
-      bash-prompt-prefix = "pylib-nixperiments";
-      # trusted-substituters, trusted-public-keys, builders-use-substitutes, ...
-      # https://nixos.org/manual/nix/stable/command-ref/conf-file.html
-    };
+  nixConfig = {
+    bash-prompt-prefix = "pylib-nixperiments";
+    # trusted-substituters, trusted-public-keys, builders-use-substitutes, ...
+    # https://nixos.org/manual/nix/stable/command-ref/conf-file.html
+  };
 }
