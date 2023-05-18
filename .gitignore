@@ -1,0 +1,5 @@
+**/.venv/**
+**/venv/**
+nixos.qcow2
+result
+

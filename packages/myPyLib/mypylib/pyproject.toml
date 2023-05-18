@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mypylib"
+version = "1.0.0"
+authors = [ {name = "con-f-use", email = "I@confus.me"} ]
+description = "Example Python library"
+readme = "README.md"
+requires-python = ">=3.7"
+keywords = ["example", "library"]
+license = {text = "Mozilla Public License 2.0 (MPL-2.0)"}
+classifiers = [
+    "Framework :: Flask",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [ ]
+
+[project.optional-dependencies]
+dev = ["twine", "wheel", "pip"]
+
+[project.scripts]
+mypylib = "mypylib:cli"
+
+[project.urls]
+homepage = "https://github.com/tweag/nix-hour/tree/master/29"
+documentation = "https://github.com/tweag/nix-hour/issues/25"
+repository = "https://github.com/tweag/nix-hour"
+changelog = "https://github.com/tweag/nix-hour/commits/master/29"
+license = "https://opensource.org/license/mpl-2-0"
